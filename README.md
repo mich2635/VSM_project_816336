@@ -1,7 +1,7 @@
-#### DEfault admin credentials : 
-  user Name:admin
-  password: admin
+#### Default admin credentials : 
+  User Name:admin
+  Password: admin
   
 #### Default SA credentials
-  id:1
-  password : prime@123
+  id:SA's ID displayed in view ,You can use different id logins to check their notifications
+  Password : prime@123
