@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js" integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <meta charset="UTF-8">
+  <title>Insert title here</title>
+</head>
+<style>
+  #addSABtn,#addCarBtn,#addCostBtn,#btn{
+  float : right;
+  
+  }
+  .contain {
+  	margin-left :30px;
+  	margin-right:30px;
+    padding:20px;
+    box-shadow: 10px 5px 5px black;
+    background-color:rgb(107, 136, 243);
+    border-radius :40px;
+  }
+  
+  #btn{
+  width:200px;
+  }
+  body{
+  background-color: rgba(192, 200, 243, 0.53)
+  }
+   table{
+          white-space:nowrap;
+      }
+  h4,h2,h3{
+  color:black;
+  text-shadow: 1px 1px black;
+  font-style: inherit;
+  
+  }
+  
+  #updateForm,#updateSAForm,#assignSA,#updateCostinfo,#billBody,#insertSa,#insertCar,#insertCost{
+          width: 400px;
+          position: fixed;
+          top: 40%;
+          left: 45%;
+          margin-top: -150px;
+          margin-left: -150px;
+          background-color: rgba(192, 200, 243, 1);
+          border-radius: 30px;
+          text-align: center;
+          padding :30px;
+          box-shadow: 0 0 10px 5px;
+  
+          
+  }
+  #cls{
+  margin-left : 90%;
+  }
+</style>
+
+<body>
+  <br>
+  <button id="btn" class="btn btn-danger" onclick="logOut()">
+    <i class='fa fa-power-off'></i>Log out</button>
+  <center>
+    <h2>ADMIIN CONTROL</h2>
+  </center>
+  <div class="contain">
+    <div class="row">
+      <div class="col-4">
+        <center>
+          <h4>SERVICE ADVISOR DETAILS
+            <button class="btn btn-primary" onclick="openSa()" id="addSABtn">
+              <i class="fa fa-user-plus"></i>
+            </button>
+          </h4>
+        </center>
+        <table class="table table-success table-striped">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>SA NAME</th>
+              <th>STATUS</th>
+              <th>
+              </th>
+              <th>
+              </th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+          </tbody>
+        </table>
+      </div>
+      <div class="col-4">
+        <center>
+          <h4>VEHICLE DETAILS
+            <button class="btn btn-primary" id="addCarBtn" onclick="openCar()">
+              <i class="fa fa-plus"></i>
+            </button>
+          </h4>
+        </center>
+        <table class="table table-success table-striped" class="rowAvoid">
+          <thead>
+            <tr>
+              <th>CAR NO</th>
+              <th>CAR NAME</th>
+              <th>STATUS</th>
+              <th>
+              </th>
+              <th>
+              </th>
+            </tr>
+          </thead>
+          <tbody id="tableBody2">
+          </tbody>
+        </table>
+      </div>
+      <div class="col-4">
+        <center>
+          <h4>MATERIAL COST DETAILS
+            <button class="btn btn-primary" id="addCostBtn" onclick="openCostDiv()">
+              <i class="fa fa-plus-circle"></i>
+            </button>
+          </h4>
+        </center>
+        <table class="table table-success table-striped">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>SERVICE NAME</th>
+              <th>COST</th>
+              <th>
+              </th>
+              <th>
+              </th>
+            </tr>
+          </thead>
+          <tbody id="tBodyCost">
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <br>
+  <br>
+  <br>
+  <div class="contain">
+    <center>
+      <h3>ASSIGNED STATUS</h3>
+    </center>
+    <button class="btn btn-outline-dark" onclick="getPendingCar()" id="btn">pending</button>
+    <button class="btn btn-outline-dark" onclick="getOnProgressCar()" id="btn">on progress</button>
+    <button class="btn btn-outline-dark" onclick="getFinishedCar()" id="btn">Done</button>
+    <table class="table table-success table-striped">
+      <thead>
+        <tr>
+          <th>CAR NO</th>
+          <th>CAR NAME</th>
+          <th>SERVICE STATUS</th>
+          <th>SA NO</th>
+          <th>SA NAME</th>
+          <th>STATUS</th>
+          <th>
+          </th>
+        </tr>
+      </thead>
+      <tbody id=tableBody3>
+      </tbody>
+    </table>
+  </div>
+</body>
+<div id="updateForm">
+  <button type="button" id="cls" class="btn-close" aria-label="Close" onclick="closeDiv()">
+  </button>
+  <br>
+  <h4>UPDATE DETAILS</h4>
+  <form onsubmit="updateCarInfo()">
+    <label>ID</label>
+    <br>
+    <input type=number id="updateId" readonly class="form-control">
+    <br>
+    <label>VEHICLE NAME</label>
+    <br>
+    <input type=text id="updateName" required class="form-control">
+    <br>
+    <label>STATUS</label>
+    <br>
+    <input type=text id="updateStatus" readOnly class="form-control">
+    <br>
+    <br>
+    <button type=submit class="btn btn-info">UPDATE</button>
+  </form>
+</div>
+<div id="updateSAForm">
+  <button type="button" id="cls" class="btn-close" aria-label="Close" onclick="closeDiv()">
+  </button>
+  <br>
+  <h4>UPDATE DETAILS</h4>
+  <form onsubmit="updateSAInfo()">
+    <label>ID</label>
+    <br>
+    <input type=number id="updateSAId" readonly class="form-control">
+    <br>
+    <label>SA NAME</label>
+    <br>
+    <input type=text id="updateSAName" required class="form-control">
+    <br>
+    <label>SA STATUS</label>
+    <br>
+    <input type=text id="updateSAStatus" readOnly class="form-control">
+    <br>
+    <br>
+    <button type=submit class="btn btn-info">UPDATE</button>
+  </form>
+</div>
+<div id="updateCostinfo">
+  <button type="button" id="cls" class="btn-close" aria-label="Close" onclick="closeDiv()">
+  </button>
+  <br>
+  <h4>UPDATE DETAILS</h4>
+  <form onsubmit="updateCostInfo()">
+    <label>ID</label>
+    <br>
+    <input type=number id="updateCostId" readonly class="form-control">
+    <br>
+    <label>SERVICE NAME</label>
+    <br>
+    <input type=text id="updateCostName" required class="form-control">
+    <br>
+    <label>SERVICE COST</label>
+    <br>
+    <input type=text id="updateCostStatus" required class="form-control">
+    <br>
+    <br>
+    <button type=submit class="btn btn-info">UPDATE</button>
+  </form>
+</div>
+<div id="assignSA">
+  <button type="button" id="cls" class="btn-close" aria-label="Close" onclick="closeDiv()">
+  </button>
+  <br>
+  <h4>ASSIGN SERVICE ADVISOR</h4>
+  <form onsubmit="assignSa()">
+    <label>CAR NO</label>
+    <br>
+    <input type="number" id="assignCarNo" readonly class="form-control">
+    <label>SA ID</label>
+    <br>
+    <input type=number id="assignSaId" required class="form-control">
+    <br>
+    <button type=submit class="btn btn-info">ASSIGN</button>
+  </form>
+</div>
+<div id="billBody">
+  <button type="button" id="cls" class="btn-close" aria-label="Close" onclick="closeDiv()">
+  </button>
+  <br>
+  <center>
+    <h3>BILL</h3>
+  </center>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>SERVICE NAME</th>
+        <th>COST</th>
+      </tr>
+    </thead>
+    <tbody id="billBodyCost" class="table-active">
+    </tbody>
+  </table>
+</div>
+<div id="insertSa">
+  <button type="button" id="cls" class="btn-close" aria-label="Close" onclick="closeDiv()">
+  </button>
+  <br>
+  <h4>ADD SERVICE ADVISOR</h4>
+  <form onsubmit="insertSa()">
+    <label>SA NAME</label>
+    <br>
+    <input type=text id="insertName" required class="form-control">
+    <br>
+    <label>ACCOUNT PASSWORD</label>
+    <br>
+    <input type=text id="saPassword" required class="form-control">
+    <br>
+    <input type="submit" value=submit class="btn btn-info">
+  </form>
+</div>
+<div id="insertCar">
+  <button type="button" id="cls" class="btn-close" aria-label="Close" onclick="closeDiv()">
+  </button>
+  <br>
+  <h4>ADD CAR DETAILS</h4>
+  <form onsubmit="insertCar()">
+    <label>VEHICLE NAME</label>
+    <br>
+    <input type=text id="insertCarName" required class="form-control">
+    <br>
+    <label>STATUS</label>
+    <br>
+    <input type="submit" value=submit class="btn btn-info">
+  </form>
+</div>
+<div id="insertCost">
+  <button type="button" id="cls" class="btn-close" aria-label="Close" onclick="closeDiv()">
+  </button>
+  <br>
+  <h4>ADD COST DETAILLS</h4>
+  <form onsubmit="insertCost()">
+    <label>SERVICE NAMEE</label>
+    <br>
+    <input type=text id="insertCostName" required class="form-control">
+    <br>
+    <label>COST</label>
+    <br>
+    <input type=text id="insertCostV" required class="form-control">
+    <br>
+    <br>
+    <input type="submit" value=submit class="btn btn-info">
+  </form>
+</div>
+<script>
+  document.querySelector("#updateForm").style.display = "none";
+  document.querySelector("#updateSAForm").style.display = "none";
+  document.querySelector("#assignSA").style.display = "none";
+  document.querySelector("#updateCostinfo").style.display = "none";
+  document.querySelector("#billBody").style.display = "none";
+  document.querySelector("#insertCost").style.display = "none";
+  document.querySelector("#insertCar").style.display = "none";
+  document.querySelector("#insertSa").style.display = "none";
+  
+  
+  getAll();
+  /*
+   * This method is used to get all the Car,Cost,SA details from the server
+   */
+  function getAll(){
+  		let content="";
+  		$.ajax({
+  		    type: "GET",
+  		    url: "getAllSA",
+  		    contentType: "application/json; charset=utf-8",
+  		    dataType: "json",
+  		    success: function(result){
+  		        for(let sa of result){
+  		        	content += "<tr><td>"+ sa.id +"</td><td>"+ sa.name +"</td><td>"+ sa.status+ "</td><td><button class='btn btn-info' onclick=\"actions.updateSA(('"+sa.id+"'),('"+sa.name +"'),('"+ sa.status+"'))\"><i class='fa fa-pencil'></button></td><td> <button onclick=\"actions.deleteSA(('"+sa.id+"'),('"+sa.status +"'))\"class='btn btn-danger'><i class='fa fa-trash'></i></button> </td></tr>"
+  		  
+  		        }
+  		        
+  		        document.querySelector("#tableBody").innerHTML=content;
+  		    }
+  		});	
+  		let content2 ="";
+  		$.ajax({
+  		    type: "GET",
+  		    url: "getAllCarInfo",
+  		    contentType: "application/json; charset=utf-8",
+  		    dataType: "json",
+  		    success: function(result){
+  		    
+  		        for(let car of result){
+  		        	content2 += "<tr><td>"+car.carNo +"</td><td>"+ car.carName +"</td><td>" +car.status+"</td><td> <button onclick=\"actions.update(('"+car.carNo+"'),('"+car.carName +"'),('"+ car.status+"'))\" class='btn btn-info'><i class='fa fa-pencil'></button></td><td> <button onclick=\"actions.deleteCar(('"+car.carNo+"'),('"+car.status +"'))\" class='btn btn-danger'><i class='fa fa-trash'></i></button> </td></tr>"
+  		        	}
+  		        	document.querySelector("#tableBody2").innerHTML=content2;
+  		        }
+  		        
+  		});		
+  		let content3="";
+  		$.ajax({
+  		    type: "GET",
+  		    url: "getAllServiceCost",
+  		    contentType: "application/json; charset=utf-8",
+  		    dataType: "json",
+  		    success: function(result){
+  		        for(let sa of result){
+  		        	content3 += "<tr><td>"+ sa.id +"</td><td>"+ sa.name +"</td><td>"+ sa.cost+ "</td><td><button class='btn btn-info' onclick=\"actions.openCostInfoForm(('"+sa.id+"'),('"+sa.name +"'),('"+ sa.cost+"'))\"><i class='fa fa-pencil'></i></button></td><td> <button onclick=\"deleteCostinfo(('"+sa.id+"'))\"class='btn btn-danger'><i class='fa fa-trash'></i></button> </td></tr>"
+  		  
+  		        }
+  		        
+  		        document.querySelector("#tBodyCost").innerHTML=content3;
+  		    }
+  		});	
+  }
+  /*
+   * This method is used to update car details
+   */
+  function updateCarInfo(){
+  	event.preventDefault();
+  	let id =document.querySelector("#updateId").value;
+  	let name =document.querySelector("#updateName").value;
+  	let statusJs =document.querySelector("#updateStatus").value;
+  	$.ajax({
+  	    type: "PATCH",
+  	    url: "updateOnlyCarInfo",
+  	    data: {
+  	    	carNo : id,
+  	    	carName :name ,
+  	    	status :statusJs
+  	    },
+  	    success: function(data){ 
+  	         toastr.success("Vehicle Updated successfully")
+  	         getAll();
+  	        }
+  	});			
+  }
+  /*
+   * This method is used to update cost details
+   */
+  function updateCostInfo(){
+  	let id=document.querySelector("#updateCostId").value;
+  	let name=document.querySelector("#updateCostName").value;
+  	let status=document.querySelector("#updateCostStatus").value;
+  	$.ajax({
+  	    type: "PATCH",
+  	    url: "updateCostInfo",
+  	    data: {
+  	    	id : id,
+  	    	name :name ,
+  	    	cost :status
+  	    },
+  	    success: function(data){ 
+  	         toastr.success("Cost Updated successfully")
+  	         getAll();
+  	        }
+  	});
+  	
+  }
+  /*
+   * This method is used to update SA details
+   */
+  function updateSAInfo(){
+  	let id =document.querySelector("#updateSAId").value;
+  	let name =document.querySelector("#updateSAName").value;
+  	let statusJs =document.querySelector("#updateSAStatus").value;
+  	$.ajax({
+  	    type: "PATCH",
+  	    url: "updateSA",
+  	    data: {
+  	    	"id" : id,
+  	    	"name" :name ,
+  	    	"status" :statusJs
+  	    },
+  	    success: function(data){ 
+  	         toastr.success("SA Updated successfully")
+  	         getAll();
+  	        }
+  	});		
+  }
+  /*
+   * This method is  used to delete cost details
+   */
+  function deleteCostinfo(id){
+  	$.ajax({
+  	    type: "DELETE",
+  	    url: "deleteCostInfo",
+  	    data: {
+  	    	"id" : id
+  	    	
+  	    },
+  	    success: function(data){ 
+  	         toastr.success("Cost Info deleted Successfully")
+  	         getAll();
+  	         getPendingCar();
+  	        }
+  	});		
+  }
+  /*
+   * This is method is used to assign SA to car 
+   */
+  function assignSa(){
+  	event.preventDefault();
+  	let saId=document.querySelector("#assignSaId").value;
+  	let carNo=document.querySelector("#assignCarNo").value;
+  	$.ajax({
+  	    type: "PATCH",
+  	    url: "assignSa",
+  	    data: {
+  	    	"carNo" : carNo,
+  	    	"saId" : saId
+  	    	
+  	    },
+  	    success: function(data){ 
+  	         toastr.success("Vehicle assigned to SA successfully")
+  	         getAll();
+  	         getPendingCar();
+  	        }
+  	});		
+  }
+  
+  
+  		
+  	class actions{
+  		
+  		static deleteCar(carNo,status){
+  			if(status == 'on progress'){
+  				toastr.error("Sorry the work is on progress");
+  			}
+  			else{
+  				$.ajax({
+  				    type: "DELETE",
+  				    url: "deleteCar",
+  				    data: {
+  				    	id : carNo
+  				    },
+  				    success: function(data){ 
+  				         toastr.success("Vehicle Deleted successfully")
+  				         getAll();
+  				        }
+  				});			
+  				
+  			}
+  			
+  		}
+  		
+  		static deleteSA(idSA,status){
+  			if(status == "working"){
+  				toastr.error("Sorry the SA is working")
+  			}else{
+  					$.ajax({
+  					    type: "DELETE",
+  					    url: "deleteServiceAdvisor",
+  					    data: {
+  					    	id : idSA
+  					    },
+  					    success: function(data){ 
+  					         toastr.success("SA Deleted successfully")
+  					         getAll();
+  					        }
+  					});			
+  					
+  				}
+  		}
+  		
+  		static update(carNo,carName,status){
+  			document.querySelector("#updateForm").style.display = "block";  
+  			document.querySelector("#updateId").value= carNo;
+  			document.querySelector("#updateName").value= carName;
+  			document.querySelector("#updateStatus").value= status;
+  		}
+  		static updateSA(id,name,status){
+  			document.querySelector("#updateSAForm").style.display = "block";  
+  			document.querySelector("#updateSAId").value= id;
+  			document.querySelector("#updateSAName").value= name;
+  			document.querySelector("#updateSAStatus").value= status;
+  		}
+  		static openAssignForm(carId){
+  			document.querySelector("#assignSA").style.display = "block";
+  			document.querySelector("#assignCarNo").value=carId;
+  		}
+  		static openCostInfoForm(id,name,cost){
+  			 
+  			document.querySelector("#updateCostinfo").style.display = "block";
+  			document.querySelector("#updateCostId").value=id;
+  			document.querySelector("#updateCostName").value=name;
+  			document.querySelector("#updateCostStatus").value=cost;
+  		}
+  		
+  	}
+  	
+  /**
+   * This method is used to close all the pop up forms
+   */
+  function closeDiv(){
+  		event.preventDefault();
+  		document.querySelector("#updateForm").style.display = "none"; 
+  		document.querySelector("#updateSAForm").style.display = "none"; 
+  		document.querySelector("#assignSA").style.display = "none"; 
+  		document.querySelector("#updateCostinfo").style.display = "none";
+  		document.querySelector("#billBody").style.display = "none"
+  		document.querySelector("#insertCost").style.display = "none";
+  		document.querySelector("#insertCar").style.display = "none";
+  		document.querySelector("#insertSa").style.display = "none";
+  
+  }
+  	
+  /**
+   * This method is used to get all the progressing car
+   */
+  function getOnProgressCar(){
+  	let content = "";
+  	$.ajax({
+  	    type: "GET",
+  	    url: "getAllCarInfo",
+  	    contentType: "application/json; charset=utf-8",
+  	    dataType: "json",
+  	    success: function(result){
+  	        for(let car of result){
+  	        	if(car.serviceAdvisor != null && car.status == "on progress"){
+  	        	content += "<tr><td>"+car.carNo +"</td><td>"+ car.carName +"</td><td>" +car.status+"</td><td>"+ car.serviceAdvisor.id +"</td><td>"+ car.serviceAdvisor.name+ "</td><td>"+ car.serviceAdvisor.status+ "</td><td></td></tr>"
+  	        	}
+  	        	document.querySelector("#tableBody3").innerHTML=content;
+  	        }
+  	        
+  	    }
+  	});	
+  }
+  /**
+   * This method is used to get all the finished cars
+   */
+  function getFinishedCar(){
+  	let content = "";
+  	$.ajax({
+  	    type: "GET",
+  	    url: "getAllCarInfo",
+  	    contentType: "application/json; charset=utf-8",
+  	    dataType: "json",
+  	    success: function(result){
+  	    
+  	        for(let car of result){
+  	        	if(car.serviceAdvisor != null && car.status == "Done"){
+  	        	content += "<tr><td>"+car.carNo +"</td><td>"+ car.carName +"</td><td>" +car.status+"</td><td>"+ car.serviceAdvisor.id +"</td><td>"+ car.serviceAdvisor.name+ "</td><td>"+ car.serviceAdvisor.status+ "</td><td><button class='btn btn-success'  onclick=\"getBill(('"+car.carNo+"'))\">Bill</button></td></tr>"
+  	        	}
+  	        	document.querySelector("#tableBody3").innerHTML=content;
+  	        }
+  	        
+  	    }
+  	});	
+  	
+  }
+  /**
+   * This method is used to get all the pending car
+   */
+  function getPendingCar(){
+  	let content = "";
+  	$.ajax({
+  	    type: "GET",
+  	    url: "getAllCarInfo",
+  	    contentType: "application/json; charset=utf-8",
+  	    dataType: "json",
+  	    success: function(result){
+  	    
+  	        for(let car of result){
+  	        	if(car.serviceAdvisor == null && car.status == "pending"){
+  	        	content += "<tr><td>"+car.carNo +"</td><td>"+ car.carName +"</td><td>" +car.status+"</td><td>"+ "Not Assigned" +"</td><td>"+ "Not Assigned"+ "</td><td>"+ "Not Assigned"+ "</td><td><button onclick=\"actions.openAssignForm(('"+car.carNo+"'))\" class='btn btn-success''>Assign</button></td></tr>"
+  	        	}
+  	        	document.querySelector("#tableBody3").innerHTML=content;
+  	        }
+  	        
+  	    }
+  	});	
+  	
+  }
+  /*
+   * This method is used to get the bill from the server
+   */
+  function getBill(carNo){
+  	
+  	let content = "";
+  	let total = 0;
+  	$.ajax({
+  	    type: "GET",
+  	    url: "getAllCarInfo",
+  	    contentType: "application/json; charset=utf-8",
+  	    dataType: "json",
+  	    success: function(result){
+  	    	  	    
+  	        for(let costInfo of result){
+  	        	
+  	        	if(costInfo.carNo == carNo){
+  	        		let value = costInfo.cost;
+  	        		
+  	        		if(costInfo.cost.length != 0){
+  	        			
+  	        		for(let i=0;i< value.length;i++){
+  	        			total +=value[i].cost;
+  	        			content += "<tr><td>"+value[i].id +"</td><td>"+ value[i].name+"</td><td>" +value[i].cost+"</td></tr>"
+  	        		}
+  	        			content +="<tr class='table-active'><td colspan='2'>TOTAL COST</td><td>" + total+"</td></tr>"
+  	        }
+  	        }
+  	        }
+  	        document.querySelector("#billBodyCost").innerHTML=content;
+  	        document.querySelector("#billBody").style.display = "block"
+  	        }
+  	        
+  	});		
+  	
+  }
+  
+  /**
+   * This method is used to insert SA details
+   */
+  function insertSa(){
+  	
+  	let name=document.querySelector("#insertName").value;
+  	let password = document.querySelector("#saPassword").value;
+  	
+  	
+  	$.ajax({
+  	    type: "POST",
+  	    url: "insertSa",
+  	    data: {
+  	    	"name" :name, 
+  	    	password :password
+  	    },
+  	    success: function(data){ 
+  	         toastr.success("SA Added successfully")
+  	         getAll();
+  	        }
+  	});	
+  	
+  	
+  }
+  /**
+   * This method is used to isert cost details
+   */
+  function insertCost(){
+  	
+  	let name=document.querySelector("#insertCostName").value;
+  	let cost=document.querySelector("#insertCostV").value;
+  	
+  	$.ajax({
+  	    type: "POST",
+  	    url: "insertCost",
+  	    data: {
+  	    	
+  	    	"name" :name ,
+  	    	"cost" :cost
+  	    },
+  	    success: function(data){ 
+  	         toastr.success("Service Cost Added Successfully")
+  	         getAll();
+  	        }
+  	});	
+  	
+  }
+  /**
+   * This method is used to insert car
+   */
+  function insertCar(){
+  	
+  	let name=document.querySelector("#insertCarName").value;
+  	$.ajax({
+  	    type: "POST",
+  	    url: "insertCar",
+  	    data: {
+  	    	
+  	    	"name" :name 
+  	    	
+  	    },
+  	    success: function(data){ 
+  	         toastr.success("Car Added Succeddfully")
+  	         getAll();
+  	        }
+  	});	
+  }
+  
+  /*
+   * This method is used to open insert SA form 
+   */
+  function openSa(){
+  	event.preventDefault();
+  	document.querySelector("#insertSa").style.display = "block";
+  	
+  	
+  }
+  /**
+   * This method is used to open cost Form 
+   */
+  function openCostDiv(){
+  	event.preventDefault();
+  	document.querySelector("#insertCost").style.display = "block";
+  }
+  /**
+   * This method is used to open the insert car Form 
+   */
+  function openCar(){
+  	event.preventDefault();
+  	document.querySelector("#insertCar").style.display = "block";
+  }
+  
+  function securityCheck(){
+  	$.ajax({
+  	    type: "PUT",
+  	    url: "AdminSecurity",
+  	   
+  	    success: function(data){ 
+  	         if(!data){
+  	        	 window.location.href="adminLogin.html";
+  	         }
+  	        }
+  	});	
+  }
+  function logOut(){
+  	$.ajax({
+  	    type: "PUT",
+  	    url: "logOut",
+  	   
+  	    success: function(data){ 
+  	         if(data){
+  	        	 window.location.href="adminLogin.html";
+  	         }
+  	        }
+  	});	
+  }
+  securityCheck();
+</script>
+
+</html>

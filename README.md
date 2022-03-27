@@ -1,1 +1,7 @@
-# VSM_project_816336
+#### DEfault admin credentials : 
+  user Name:admin
+  password: admin
+  
+#### Default SA credentials
+  id:1
+  password : prime@123
